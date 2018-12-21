@@ -9,7 +9,7 @@ type Session struct {
 }
 
 func NewSession(url string) (*Session, error) {
-	session, err := mgo.Dial("localhost:27707")
+	session, err := mgo.Dial("localhost:27017")
 	if err != nil {
 		return nil, err
 	}
@@ -22,6 +22,14 @@ func (s *Session) Copy() *Session {
 
 func (s *Session) GetCollection(db string, col string) *mgo.Collection {
 	return s.session.DB(db).C(col)
+}
+
+func (s *Session) DropDatabase(db string) error {
+	if s.session != nil {
+		return s.session.DB(db).DropDatabase()
+	}
+
+	return nil
 }
 
 func (s *Session) Close() {

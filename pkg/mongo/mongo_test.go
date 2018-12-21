@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	mongoUrl           = "localhost:27707"
+	mongoUrl           = "localhost:27017"
 	dbName             = "test_db"
 	userCollectionName = "user"
 )
@@ -23,7 +23,11 @@ func createUserShouldInsertUserIntoMongo(t *testing.T) {
 	if err != nil {
 		log.Fatalf("Unable to connect to mongo: %s", err)
 	}
-	defer session.Close()
+	defer func() {
+		session.DropDatabase(dbName)
+		session.Close()
+	}()
+
 	userService := mongo.NewUserService(session.Copy(), dbName, userCollectionName)
 
 	testUserName := "integration_test_user"
@@ -38,7 +42,7 @@ func createUserShouldInsertUserIntoMongo(t *testing.T) {
 
 	// Assert
 	if err != nil {
-		t.Error("Unable to create user: `%s`", err)
+		t.Errorf("Unable to create user: `%s`", err)
 	}
 	var results []root.User
 	session.GetCollection(dbName, userCollectionName).Find(nil).All(&results)
@@ -49,6 +53,6 @@ func createUserShouldInsertUserIntoMongo(t *testing.T) {
 	}
 
 	if results[0].Username != user.Username {
-		t.Error("Incorrect username. Expected `%s`, got `%s`", testUserName, results[0].Username)
+		t.Errorf("Incorrect username. Expected `%s`, got `%s`", testUserName, results[0].Username)
 	}
 }
