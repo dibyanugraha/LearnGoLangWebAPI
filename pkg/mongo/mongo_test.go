@@ -28,6 +28,7 @@ func createUserShouldInsertUserIntoMongo(t *testing.T) {
 		session.Close()
 	}()
 
+	mockHash := mock.Hash{}
 	userService := mongo.NewUserService(session.Copy(), dbName, userCollectionName)
 
 	testUserName := "integration_test_user"

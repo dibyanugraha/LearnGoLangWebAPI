@@ -9,6 +9,7 @@ import (
 
 type UserService struct {
 	collection *mgo.Collection
+	hash       root.Hash
 }
 
 func NewUserService(session *Session, dbName string, collectionName string) *UserService {
@@ -19,6 +20,11 @@ func NewUserService(session *Session, dbName string, collectionName string) *Use
 
 func (p *UserService) Create(u *root.User) error {
 	user := newUserModel(u)
+	hashedPassword, err := p.hash.Generate(user.Password)
+	if err != nil {
+		return err
+	}
+	user.Password = hashedPassword
 	return p.collection.Insert(&user)
 }
 
