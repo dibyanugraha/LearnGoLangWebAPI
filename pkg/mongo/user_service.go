@@ -12,10 +12,10 @@ type UserService struct {
 	hash       root.Hash
 }
 
-func NewUserService(session *Session, dbName string, collectionName string) *UserService {
+func NewUserService(session *Session, dbName string, collectionName string, hash root.Hash) *UserService {
 	collection := session.GetCollection(dbName, collectionName)
 	collection.EnsureIndex(userModelIndex())
-	return &UserService{collection}
+	return &UserService{collection, hash}
 }
 
 func (p *UserService) Create(u *root.User) error {
