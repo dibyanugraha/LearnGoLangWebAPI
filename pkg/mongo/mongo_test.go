@@ -2,6 +2,7 @@ package mongo_test
 
 import (
 	root "TestRestAPI/pkg"
+	"TestRestAPI/pkg/mock"
 	"TestRestAPI/pkg/mongo"
 	"log"
 	"testing"
@@ -29,7 +30,7 @@ func createUserShouldInsertUserIntoMongo(t *testing.T) {
 	}()
 
 	mockHash := mock.Hash{}
-	userService := mongo.NewUserService(session.Copy(), dbName, userCollectionName)
+	userService := mongo.NewUserService(session.Copy(), dbName, userCollectionName, &mockHash)
 
 	testUserName := "integration_test_user"
 	testPassword := "integration_test_password"
