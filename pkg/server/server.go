@@ -1,8 +1,12 @@
 package server
 
 import (
+	root "TestRestAPI/pkg"
+	"log"
+	"net/http"
+	"os"
+
 	"github.com/gorilla/handlers"
-	"TestRestAPI/pkg"
 	"github.com/gorilla/mux"
 )
 
@@ -18,8 +22,7 @@ func NewServer(u root.UserService) *Server {
 
 func (s *Server) Start() {
 	log.Print("Listening on port 8090")
-	if err != http.ListenAndServe(":8090", handlers.LoggingHandler(os.Stdout, s.router))
-	err != nil {
+	if err := http.ListenAndServe(":8090", handlers.LoggingHandler(os.Stdout, s.router)); err != nil {
 		log.Fatal("http.ListenAndServe: ", err)
 	}
 }
